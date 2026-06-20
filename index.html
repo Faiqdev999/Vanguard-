@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VANGUARD | Premium Climate-Resilient Apparel & Hardware</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        vanguard: {
+                            dark: '#0B0F17',
+                            card: '#151C2C',
+                            border: '#2A354F',
+                            accent: '#991B1B',
+                            accentHover: '#7F1D1D',
+                            emerald: '#10B981',
+                            amber: '#F59E0B'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0F17;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A354F;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #991B1B;
+        }
+        .view-section {
+            display: none;
+        }
+        .view-section.active {
+            display: block;
+            animation: viewFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes viewFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .product-card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .product-card-hover:hover {
+            transform: translateY(-4px);
+            border-color: #991B1B;
+            box-shadow: 0 10px 25px -5px rgba(153, 27, 27, 0.15);
+        }
+        .shop-layout {
+            display: grid;
+            grid-template-columns: 310px 1fr;
+            gap: 1.5rem;
+        }
+        @media (max-width: 1024px) {
+            .shop-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-vanguard-dark text-gray-200 min-h-screen flex flex-col font-sans selection:bg-vanguard-accent selection:text-white">
+
+    <!-- GLOBAL TOAST NOTIFICATION UTILITY -->
+    <div id="global-toast" class="fixed top-24 right-6 z-50 transform translate-x-[150%] transition-transform duration-300 bg-vanguard-card border-l-4 border-vanguard-emerald text-white px-5 py-4 rounded shadow-2xl flex items-center space-x-3 max-w-sm">
+        <div class="text-vanguard-emerald" id="toast-icon">
+            <i class="fas fa-check-circle text-xl"></i>
+        </div>
+        <div>
+            <p class="font-bold text-xs uppercase tracking-wider text-gray-400" id="toast-title">System Alert</p>
+            <p class="text-sm font-medium" id="toast-msg">Action processed successfully.</p>
+        </div>
+    </div>
+
+    <!-- HEADER / NAVIGATION HUB -->
+    <header class="sticky top-0 z-40 bg-vanguard-dark/95 backdrop-filter backdrop-blur-md border-b border-vanguard-border/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo -->
+                <div class="flex items-center space-x-2 cursor-pointer" onclick="appState.navigateTo('home')">
+                    <div class="w-8 h-8 rounded bg-vanguard-accent flex items-center justify-center font-black text-white text-lg tracking-wider">V</div>
+                    <span class="font-black text-2xl tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-gray-500">VANGUARD</span>
+                </div>
+
+                <!-- Desktop Nav Tabs -->
+                <nav class="hidden lg:flex items-center space-x-1" id="desktop-nav">
+                    <button onclick="appState.navigateTo('home')" class="px-3 py-2 text-sm font-semibold uppercase tracking-wider text-gray-300 hover:text-white rounded transition-all active-nav" id="nav-home">Home</button>
+                    <button onclick="appState.navigateTo('shop', 'men')" class="px-3 py-2 text-sm font-semibold uppercase tracking-wider text-gray-300 hover:text-white rounded transition-all" id="nav-men">Men's Jackets</button>
+                    <button onclick="appState.navigateTo('shop', 'women')" class="px-3 py-2 text-sm font-semibold uppercase tracking-wider text-gray-300 hover:text-white rounded transition-all" id="nav-women">Women's Jackets</button>
+                    <button onclick="appState.navigateTo('shop', 'leather')" class="px-3 py-2 text-sm font-semibold uppercase tracking-wider text-gray-300 hover:text-white rounded transition-all" id="nav-leather">Leather</button>
+                    
+                    <!-- Accessories Dropdown -->
+                    <div class="relative group">
+                        <button class="px-3 py-2 text-sm font-semibold uppercase tracking-wider text-gray-300 hover:text-white rounded transition-all flex items-center space-x-1" id="nav-accessories-btn">
+                            <span>Accessories</span>
+                            <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+                        </button>
+                        <div class="absolute left-0 mt-1 w-48 rounded-md shadow-2xl bg-vanguard-card border border-vanguard-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="py-1">
+                                <a href="#" onclick="appState.navigateTo('shop', 'acc_belts')" class="block px-4 py-2.5 text-xs font-semibold uppercase tracking-wider hover:bg-vanguard-accent hover:text-white">Premium Belts</a>
+                                <a href="#" onclick="appState.navigateTo('shop', 'acc_shoes')" class="block px-4 py-2.5 text-xs font-semibold uppercase tracking-wider hover:bg-vanguard-accent hover:text-white">Technical Shoes</a>
+                                <a href="#" onclick="appState.navigateTo('shop', 'acc_pants')" class="block px-4 py-2.5 text-xs font-semibold uppercase tracking-wider hover:bg-vanguard-accent hover:text-white">Armor Pants</a>
+                                <a href="#" onclick="appState.navigateTo('shop', 'acc_shorts')" class="block px-4 py-2.5 text-xs font-semibold uppercase tracking-wider hover:bg-vanguard-accent hover:text-white">Tactical Shorts</a>
+                                <a href="#" onclick="appState.navigateTo('shop', 'acc_watches')" class="block px-4 py-2.5 text-xs font-semibold uppercase tracking-wider hover:bg-vanguard-accent hover:text-white">Field Watches</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="appState.navigateTo('shop', 'winter')" class="px-3 py-2 text-sm font-semibold uppercase tracking-wider text-gray-300 hover:text-white rounded transition-all" id="nav-winter">Winter</button>
+                    <button onclick="appState.navigateTo('shop', 'summer')" class="px-3 py-2 text-sm font-semibold uppercase tracking-wider text-gray-300 hover:text-white rounded transition-all" id="nav-summer">Summer</button>
+                    <button onclick="appState.navigateTo('about')" class="px-3 py-2 text-sm font-semibold uppercase tracking-wider text-gray-300 hover:text-white rounded transition-all" id="nav-about">About Us</button>
+
+                    <!-- Navbar Actions (Buy Now, Add To Cart, CRO Tracking Option) -->
+                    <div class="flex items-center space-x-2 bl-1 border-vanguard-border pl-2 ml-2">
+                        <button onclick="appState.triggerDirectBuy()" class="px-2.5 py-1.5 bg-vanguard-accent hover:bg-vanguard-accentHover text-[11px] font-bold tracking-wider uppercase text-white rounded transition-all">Buy Now</button>
+                        <button onclick="appState.triggerNavbarAddCart()" class="px-2.5 py-1.5 bg-vanguard-card border border-vanguard-border hover:bg-vanguard-dark text-[11px] font-bold tracking-wider uppercase text-gray-200 rounded transition-all">Add to Cart</button>
+                        <div class="flex items-center space-x-1 bg-vanguard-dark border border-vanguard-border/80 rounded px-2 py-1 text-[10px] text-gray-400 font-medium">
+                            <i class="fas fa-eye text-vanguard-emerald animate-pulse"></i>
+                            <span>Live Traffic: <span id="nav-traffic-counter" class="text-white font-bold">142</span></span>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Search and Controls -->
+                <div class="flex items-center space-x-4">
+                    
+                    <!-- Search Bar -->
+                    <div class="hidden md:flex items-center bg-vanguard-dark border border-vanguard-border rounded px-2.5 py-1.5 focus-within:border-vanguard-accent transition-all">
+                        <input type="text" id="global-search-input" placeholder="Search catalog..." class="bg-transparent border-none text-xs text-white placeholder-gray-500 focus:outline-none w-32" onkeyup="if(event.key === 'Enter') appState.triggerGlobalSearch()">
+                        <button onclick="appState.triggerGlobalSearch()" class="text-gray-500 hover:text-white px-1">
+                            <i class="fas fa-search text-xs"></i>
+                        </button>
+                    </div>
+
+                    <!-- Auth Management Hub -->
+                    <div id="auth-status-container" class="flex items-center space-x-2">
+                        <!-- Populated by system logic -->
+                    </div>
+
+                    <!-- Admin Portal Button -->
+                    <button onclick="appState.navigateTo('admin')" class="px-3.5 py-1.5 border border-vanguard-border hover:border-vanguard-accent text-xs font-semibold tracking-wider uppercase rounded hover:bg-vanguard-accent/10 transition-all flex items-center space-x-1.5 text-gray-300 hover:text-white">
+                        <i class="fas fa-user-gear text-vanguard-amber"></i>
+                        <span>Admin Hub</span>
+                    </button>
+
+                    <!-- Cart Trigger -->
+                    <button onclick="appState.navigateTo('checkout')" class="relative p-2.5 text-gray-300 hover:text-white hover:bg-vanguard-border/30 rounded-full transition-all">
+                        <i class="fas fa-shopping-bag text-lg"></i>
+                        <span id="cart-counter-badge" class="absolute -top-1 -right-1 bg-vanguard-accent text-white text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center border-2 border-vanguard-dark shadow-lg">0</span>
+                    </button>
+
+                    <!-- Mobile Menu Hamburger -->
+                    <button onclick="appState.toggleMobileMenu()" class="lg:hidden p-2 text-gray-300 hover:text-white">
+                        <i class="fas fa-bars text-xl" id="mobile-menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Master Embedded Navigation Menu Bar -->
+        <div class="bg-vanguard-card border-t border-b border-vanguard-border/50 hidden lg:block">
+            <div class="max-w-7xl mx-auto px-8 py-2.5 flex items-center justify-between overflow-x-auto text-xs space-x-6">
+                <span class="font-extrabold text-[10px] uppercase tracking-widest text-vanguard-accent">Quick Catalog:</span>
+                <div class="flex space-x-6">
+                    <a href="#" onclick="appState.navigateTo('shop', 'men')" class="hover:text-vanguard-accent font-semibold transition-colors">Men's (3)</a>
+                    <a href="#" onclick="appState.navigateTo('shop', 'women')" class="hover:text-vanguard-accent font-semibold transition-colors">Women's (3)</a>
+                    <a href="#" onclick="appState.navigateTo('shop', 'leather')" class="hover:text-vanguard-accent font-semibold transition-colors">Leather Apparel (2)</a>
+                    <a href="#" onclick="appState.navigateTo('shop', 'acc_belts')" class="text-gray-400 hover:text-white transition-colors">Belts</a>
+                    <a href="#" onclick="appState.navigateTo('shop', 'acc_shoes')" class="text-gray-400 hover:text-white transition-colors">Shoes</a>
+                    <a href="#" onclick="appState.navigateTo('shop', 'acc_pants')" class="text-gray-400 hover:text-white transition-colors">Pants</a>
+                    <a href="#" onclick="appState.navigateTo('shop', 'acc_shorts')" class="text-gray-400 hover:text-white transition-colors">Shorts</a>
+                    <a href="#" onclick="appState.navigateTo('shop', 'acc_watches')" class="text-gray-400 hover:text-white transition-colors">Watches</a>
+                </div>
+                <span class="text-[10px] bg-vanguard-dark border border-vanguard-border px-2 py-0.5 rounded text-gray-400">Total SKU Count: <span id="total-sku-counter" class="text-vanguard-emerald font-bold">8</span></span>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Menu Overlay -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-vanguard-border bg-vanguard-dark px-4 py-4 space-y-2">
+            <button onclick="appState.navigateTo('home'); appState.toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-semibold uppercase tracking-wider text-gray-300 rounded hover:bg-vanguard-border">Home</button>
+            <button onclick="appState.navigateTo('shop', 'men'); appState.toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-semibold uppercase tracking-wider text-gray-300 rounded hover:bg-vanguard-border">Men's Jackets</button>
+            <button onclick="appState.navigateTo('shop', 'women'); appState.toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-semibold uppercase tracking-wider text-gray-300 rounded hover:bg-vanguard-border">Women's Jackets</button>
+            <button onclick="appState.navigateTo('shop', 'leather'); appState.toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-semibold uppercase tracking-wider text-gray-300 rounded hover:bg-vanguard-border">Leather Jackets</button>
+            <div class="border-t border-vanguard-border/60 my-2 pt-2">
+                <span class="block px-3 pb-1 text-[10px] font-black tracking-widest text-vanguard-accent uppercase">Accessories</span>
+                <button onclick="appState.navigateTo('shop', 'acc_belts'); appState.toggleMobileMenu();" class="block w-full text-left py-1.5 px-6 text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-white">Premium Belts</button>
+                <button onclick="appState.navigateTo('shop', 'acc_shoes'); appState.toggleMobileMenu();" class="block w-full text-left py-1.5 px-6 text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-white">Technical Shoes</button>
+                <button onclick="appState.navigateTo('shop', 'acc_pants'); appState.toggleMobileMenu();" class="block w-full text-left py-1.5 px-6 text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-white">Armor Pants</button>
+                <button onclick="appState.navigateTo('shop', 'acc_shorts'); appState.toggleMobileMenu();" class="block w-full text-left py-1.5 px-6 text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-white">Tactical Shorts</button>
+                <button onclick="appState.navigateTo('shop', 'acc_watches'); appState.toggleMobileMenu();" class="block w-full text-left py-1.5 px-6 text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-white">Field Watches</button>
+            </div>
+            <button onclick="appState.navigateTo('shop', 'winter'); appState.toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-semibold uppercase tracking-wider text-gray-300 rounded hover:bg-vanguard-border">Winter Collections</button>
+            <button onclick="appState.navigateTo('shop', 'summer'); appState.toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-semibold uppercase tracking-wider text-gray-300 rounded hover:bg-vanguard-border">Summer Collections</button>
+            <button onclick="appState.navigateTo('about'); appState.toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-semibold uppercase tracking-wider text-gray-300 rounded hover:bg-vanguard-border">About Us</button>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- HOMEPAGE VIEW -->
+        <section id="view-home" class="view-section active space-y-16">
+            <!-- Hero Banner -->
+            <div class="relative rounded-2xl overflow-hidden bg-cover bg-center h-[520px] shadow-2xl flex items-center" style="background-image: linear-gradient(rgba(11, 15, 23, 0.55), rgba(11, 15, 23, 0.85)), url('https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&fit=crop&w=1200&q=80')">
+                <div class="p-8 md:p-16 max-w-2xl space-y-6">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase bg-vanguard-accent/30 text-vanguard-accent border border-vanguard-accent/50">Tactical Gear Release</span>
+                    <h1 class="text-4xl md:text-6xl font-black tracking-tighter uppercase text-white leading-none">ENGINEERED CLIMATE SHIELDS</h1>
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed font-medium">Equipped with biometric heat lining, zero-waste sustainable fills, and premium YKK zip mechanics. Master severe environmental conditions with Vanguard outer armor layouts.</p>
+                    
+                    <!-- Dynamic Frontpage Social Engagement Box -->
+                    <div class="bg-vanguard-dark/80 backdrop-blur border border-vanguard-border/60 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 max-w-md">
+                        <div>
+                            <p class="text-xs font-extrabold uppercase tracking-wider text-white">Vanguard Collective</p>
+                            <p class="text-[11px] text-gray-400" id="brand-social-stats">12,402 Followers · 84,119 Likes</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="appState.toggleBrandFollow()" id="brand-follow-btn" class="px-3 py-1.5 bg-white text-vanguard-dark hover:bg-gray-200 font-bold text-[11px] tracking-wider uppercase rounded transition-all flex items-center space-x-1">
+                                <i class="fas fa-plus"></i> <span>Follow</span>
+                            </button>
+                            <button onclick="appState.toggleBrandLike()" id="brand-like-btn" class="px-3 py-1.5 bg-vanguard-border/80 text-white hover:bg-vanguard-border font-bold text-[11px] tracking-wider uppercase rounded transition-all flex items-center space-x-1">
+                                <i class="far fa-heart text-vanguard-accent"></i> <span>Like</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <button onclick="appState.navigateTo('shop', 'men')" class="px-6 py-3 bg-vanguard-accent hover:bg-vanguard-accentHover text-xs font-bold tracking-widest uppercase text-white rounded transition-all shadow-lg hover:shadow-vanguard-accent/30 hover:scale-[1.02] active:scale-[0.98]">Men's Outerwear</button>
+                        <button onclick="appState.navigateTo('shop', 'women')" class="px-6 py-3 bg-vanguard-border/50 hover:bg-vanguard-border text-xs font-bold tracking-widest uppercase text-white rounded border border-vanguard-border/80 transition-all hover:scale-[1.02] active:scale-[0.98]">Women's Matrix</button>
+                    </div>
+                </div>
+                <!-- Dynamic Floating Code Badge -->
+                <div class="absolute bottom-6 right-6 hidden md:block bg-vanguard-dark/80 backdrop-blur border border-vanguard-border p-4 rounded-lg">
+                    <p class="text-[10px] font-black tracking-wider uppercase text-vanguard-amber"><i class="fas fa-tag"></i> Active Promo Settlement</p>
+                    <p class="text-sm font-extrabold text-white">Apply <span class="text-vanguard-emerald text-base font-black">VANGUARD50</span></p>
+                    <p class="text-[9px] text-gray-400 font-medium mt-0.5">Yields 50% checkout discount on any outerwear profile.</p>
+                </div>
+            </div>
+
+            <!-- Featured Categories Grid -->
+            <div class="space-y-6">
+                <div class="flex items-end justify-between border-b border-vanguard-border pb-4">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-black uppercase tracking-wider">Operational Portfolios</h2>
+                        <p class="text-xs text-gray-400 font-medium mt-0.5">Explore tailored product classifications optimized for extreme environments.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div onclick="appState.navigateTo('shop', 'leather')" class="group relative rounded-xl overflow-hidden h-[300px] cursor-pointer shadow-xl transition-all hover:-translate-y-1">
+                        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style="background-image: url('https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&q=80')"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-vanguard-dark via-vanguard-dark/40 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 space-y-1">
+                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-vanguard-accent">Heritage Leather</span>
+                            <h3 class="text-lg font-black text-white uppercase tracking-wider">Top-Grain Cafe Racers</h3>
+                        </div>
+                    </div>
+                    <div onclick="appState.navigateTo('shop', 'winter')" class="group relative rounded-xl overflow-hidden h-[300px] cursor-pointer shadow-xl transition-all hover:-translate-y-1">
+                        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style="background-image: url('https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=500&q=80')"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-vanguard-dark via-vanguard-dark/40 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 space-y-1">
+                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-vanguard-emerald">Arctic Aegis</span>
+                            <h3 class="text-lg font-black text-white uppercase tracking-wider">Winter Deployments</h3>
+                        </div>
+                    </div>
+                    <div onclick="appState.navigateTo('shop', 'acc_watches')" class="group relative rounded-xl overflow-hidden h-[300px] cursor-pointer shadow-xl transition-all hover:-translate-y-1">
+                        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style="background-image: url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80')"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-vanguard-dark via-vanguard-dark/40 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 space-y-1">
+                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-vanguard-amber">Field Hardware</span>
+                            <h3 class="text-lg font-black text-white uppercase tracking-wider">Chronograph Systems</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Products Grid -->
+            <div class="space-y-6">
+                <div class="flex items-end justify-between border-b border-vanguard-border pb-4">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-black uppercase tracking-wider">Trending Deployment Hardware</h2>
+                        <p class="text-xs text-gray-400 font-medium mt-0.5">High-fidelity climate armor boxes featuring exact specifications and direct routes to settlement checkout.</p>
+                    </div>
+                </div>
+                <div id="homepage-featured-target" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                    <!-- Dynamic Featured Items Injected Here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- CORE SHOP/CATALOG MATRIX VIEW -->
+        <section id="view-shop" class="view-section space-y-6">
+            <div class="bg-vanguard-card rounded-xl border border-vanguard-border/60 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-black uppercase tracking-wider" id="catalog-header-title">Matrix Shop Catalog</h1>
+                    <p class="text-xs text-gray-400 font-medium mt-1" id="catalog-header-desc">Analyzing 18-attribute filters across premium high-performance collections.</p>
+                </div>
+                <div class="flex items-center space-x-3 w-full md:w-auto justify-end">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Sort Layout:</span>
+                    <select id="catalog-sort-select" onchange="appState.sortCatalog(this.value)" class="bg-vanguard-dark border border-vanguard-border text-xs text-white rounded px-2.5 py-1.5 focus:outline-none">
+                        <option value="featured">Featured Specifications</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="shop-layout">
+                <!-- LEFT SIDEBAR FILTER MATRIX -->
+                <aside class="filter-sidebar bg-vanguard-card border border-vanguard-border rounded-xl shadow-2xl p-4 space-y-4 max-h-[85vh] overflow-y-auto">
+                    <div class="flex items-center justify-between border-b border-vanguard-border pb-3">
+                        <h3 class="text-sm font-black uppercase tracking-wider text-white">Attribute Filters</h3>
+                        <button onclick="appState.resetFilters()" class="text-[10px] font-bold text-vanguard-accent hover:text-red-400 uppercase tracking-wider bg-transparent border-none">Reset All</button>
+                    </div>
+
+                    <div class="space-y-3 text-xs" id="filters-matrix-accordion">
+                        <div>
+                            <label class="block font-semibold uppercase text-gray-400 mb-1">Color Select</label>
+                            <select class="matrix-filter w-full bg-vanguard-dark border border-vanguard-border p-2 rounded text-white" data-attribute="color" onchange="appState.applyFilters()">
+                                <option value="all">All Colors</option>
+                                <option value="Black">Obsidian Black</option>
+                                <option value="Brown">Vintage Mahogany/Brown</option>
+                                <option value="Navy">Deep Navy</option>
+                                <option value="Olive">Tactical Olive</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold uppercase text-gray-400 mb-1">Operational Season</label>
+                            <select class="matrix-filter w-full bg-vanguard-dark border border-vanguard-border p-2 rounded text-white" data-attribute="season" onchange="appState.applyFilters()">
+                                <option value="all">All Seasons</option>
+                                <option value="Winter">Winter Arctic</option>
+                                <option value="Summer">Summer Lightweight</option>
+                            </select>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- RIGHT PRODUCT GRID MATRIX -->
+                <div class="space-y-4">
+                    <div id="catalog-products-target" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AUTHENTICATION DIALOG / USER SIGN IN -->
+        <section id="view-auth" class="view-section max-w-md mx-auto bg-vanguard-card border border-vanguard-border p-8 rounded-2xl shadow-2xl my-12">
+            <div class="text-center space-y-2 mb-6">
+                <h2 id="auth-title" class="text-2xl font-black uppercase tracking-wider text-white">Sign In</h2>
+                <p id="auth-subtitle" class="text-xs text-gray-400 font-medium">Access your customized Vanguard climate deployment dashboard.</p>
+            </div>
+            
+            <form id="auth-form" class="space-y-4" onsubmit="appState.handleAuthSubmission(event)">
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Identity Protocol (Email Address)</label>
+                    <input type="email" id="auth-email" required class="w-full bg-vanguard-dark border border-vanguard-border rounded px-3 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-vanguard-accent transition-all" placeholder="name@vanguard.com">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Secure Passkey</label>
+                    <input type="password" id="auth-password" required class="w-full bg-vanguard-dark border border-vanguard-border rounded px-3 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-vanguard-accent transition-all" placeholder="••••••••••••">
+                </div>
+                
+                <div id="auth-role-selection" class="pt-1">
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Authorized Role Elevation</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center justify-between p-2.5 bg-vanguard-dark border border-vanguard-border rounded cursor-pointer hover:border-gray-500 transition-all">
+                            <span class="text-xs font-semibold text-gray-300">Standard User</span>
+                            <input type="radio" name="auth-role" value="user" checked class="accent-vanguard-accent">
+                        </label>
+                        <label class="flex items-center justify-between p-2.5 bg-vanguard-dark border border-vanguard-border rounded cursor-pointer hover:border-vanguard-amber transition-all">
+                            <span class="text-xs font-semibold text-gray-300">Brand Owner</span>
+                            <input type="radio" name="auth-role" value="admin" class="accent-vanguard-amber">
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-vanguard-accent hover:bg-vanguard-accentHover text-xs font-bold tracking-widest uppercase text-white rounded transition-all mt-4 shadow-lg">Confirm Authorization</button>
+            </form>
+
+            <div class="border-t border-vanguard-border/60 mt-6 pt-4 text-center">
+                <button onclick="appState.toggleAuthMode()" id="auth-toggle-mode-btn" class="text-xs text-gray-400 hover:text-white font-medium underline underline-offset-4 bg-transparent border-none">Need an operational file? Create user portfolio.</button>
+            </div>
+            
+            <div class="mt-4 p-3 bg-vanguard-dark/50 border border-vanguard-border rounded text-center">
+                <p class="text-[10px] font-mono text-gray-400">Owner Bypass Creds: <span class="text-vanguard-amber font-bold">admin@vanguard.com</span> / password: <span class="text-vanguard-amber font-bold">admin123</span></p>
+            </div>
+        </section>
+
+        <!-- OWNER CONTROL HUB (ADMIN PORTAL) -->
+        <section id="view-admin" class="view-section space-y-8">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between bg-vanguard-card border border-vanguard-border p-6 rounded-xl gap-4">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 rounded-full bg-vanguard-amber animate-pulse"></span>
+                        <h1 class="text-2xl font-black uppercase tracking-wider text-white">Owner Command Matrix</h1>
+                    </div>
+                    <p class="text-xs text-gray-400 font-medium mt-0.5">Secure root interface for inventory engineering, global catalog operations, and analytical visibility tracking.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="appState.openAddProductModal()" class="px-4 py-2 bg-vanguard-emerald hover:bg-emerald-600 text-xs font-bold tracking-wider uppercase text-white rounded transition-all flex items-center space-x-1.5 shadow-lg">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Upload New Hardware SKU</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Analytical Dashboard Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="bg-vanguard-card border border-vanguard-border rounded-xl p-5 space-y-2">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-gray-400">Total Net Checkout Settlement</p>
+                    <p class="text-3xl font-black text-white" id="admin-stat-sales-count">0 Sales</p>
+                    <div class="text-[11px] text-gray-500 font-medium">Aggregate processed pipeline count.</div>
+                </div>
+                <div class="grid grid-cols-1 bg-vanguard-card border border-vanguard-border rounded-xl p-5 space-y-2">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-vanguard-emerald">Live CRO Traffic Meter</p>
+                    <p class="text-3xl font-black text-white" id="admin-stat-traffic-count">142 Users</p>
+                    <div class="text-[11px] text-gray-500 font-medium">Real-time visitor index calculation.</div>
+                </div>
+                <div class="sm:col-span-2 bg-vanguard-card border border-vanguard-border rounded-xl p-5 space-y-2 flex flex-col h-full">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-vanguard-amber">Real-Time Core Activity Log</p>
+                    <div id="admin-activity-log-box" class="flex-grow overflow-y-auto text-[11px] font-mono text-gray-400 space-y-1 max-h-[70px]">
+                        <!-- Dynamic items -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Inventory Allocation Spreadsheet Matrix -->
+            <div class="bg-vanguard-card border border-vanguard-border rounded-xl overflow-hidden shadow-2xl">
+                <div class="px-6 py-4 border-b border-vanguard-border bg-vanguard-dark/40">
+                    <h2 class="text-sm font-black text-white uppercase tracking-wider">Active Catalog SKU Inventory Manifest</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-vanguard-dark text-gray-400 font-bold uppercase tracking-wider border-b border-vanguard-border">
+                                <th class="p-4">SKU Product Identity</th>
+                                <th class="p-4">Structural Class</th>
+                                <th class="p-4">Financial Price Index</th>
+                                <th class="p-4">Promo Reductions</th>
+                                <th class="p-4 text-right">Inventory Controls</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-inventory-table-target" class="divide-y divide-vanguard-border/50">
+                            <!-- Injected Dynamically by State Matrix -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRODUCT UPSERT WORKSPACE MODAL -->
+        <div id="product-modal-backdrop" class="fixed inset-0 bg-vanguard-dark/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-vanguard-card border border-vanguard-border max-w-lg w-full rounded-2xl shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-vanguard-dark border-b border-vanguard-border flex items-center justify-between">
+                    <h3 id="product-modal-title" class="text-sm font-black uppercase tracking-wider text-white">Upload New Climate Hardware SKU</h3>
+                    <button onclick="appState.closeProductModal()" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+                </div>
+                <form id="product-modal-form" class="p-6 space-y-4" onsubmit="appState.handleProductUpsert(event)">
+                    <input type="hidden" id="product-modal-id">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Product Title</label>
+                        <input type="text" id="product-modal-name" required class="w-full bg-vanguard-dark border border-vanguard-border rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-vanguard-accent">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Portfolio Core Classification</label>
+                            <select id="product-modal-category" required class="w-full bg-vanguard-dark border border-vanguard-border rounded px-3 py-2 text-xs text-white focus:outline-none">
+                                <option value="men">Men's Apparel</option>
+                                <option value="women">Women's Apparel</option>
+                                <option value="leather">Leather Armor</option>
+                                <option value="acc_watches">Field Watches</option>
+                                <option value="acc_shoes">Technical Shoes</option>
+                                <option value="acc_belts">Premium Belts</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Base Price Point ($USD)</label>
+                            <input type="number" id="product-modal-price" required min="1" class="w-full bg-vanguard-dark border border-vanguard-border rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-vanguard-accent">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Color Variant Profile</label>
+                            <select id="product-modal-color" class="w-full bg-vanguard-dark border border-vanguard-border rounded px-3 py-2 text-xs text-white focus:outline-none">
+                                <option value="Black">Obsidian Black</option>
+                                <option value="Brown">Vintage Mahogany</option>
+                                <option value="Navy">Deep Navy</option>
+                                <option value="Olive">Tactical Olive</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Operational Season Assignment</label>
+                            <select id="product-modal-season" class="w-full bg-vanguard-dark border border-vanguard-border rounded px-3 py-2 text-xs text-white focus:outline-none">
+                                <option value="Winter">Winter Arctic</option>
+                                <option value="Summer">Summer Lightweight</option>
+                                <option value="Fall">Fall Transitional</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Asset Imagery Configuration (URL)</label>
+                        <input type="url" id="product-modal-image" required class="w-full bg-vanguard-dark border border-vanguard-border rounded px-3 py-2 text-xs text-white focus:outline-none" placeholder="https://images.unsplash.com/...">
+                    </div>
+                    <div class="pt-2 flex items-center justify-end space-x-2">
+                        <button type="button" onclick="appState.closeProductModal()" class="px-4 py-2 bg-vanguard-dark text-gray-400 hover:text-white rounded text-xs font-bold uppercase tracking-wider border border-vanguard-border">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-vanguard-accent hover:bg-vanguard-accentHover text-white rounded text-xs font-bold uppercase tracking-wider shadow-md">Commit Structural Layout</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ABOUT SECTION -->
+        <section id="view-about" class="view-section max-w-3xl mx-auto space-y-6 text-center py-12">
+            <h1 class="text-4xl font-black uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">Vanguard Outerwear Systems</h1>
+            <p class="text-sm text-gray-400 leading-relaxed max-w-xl mx-auto">Vanguard constructs architectural high-fidelity physical defenses engineered against extreme thermodynamic disruptions. Our global labs deliver premium sustainable fabrics layered with advanced protective utility overlays.</p>
+            <div class="pt-4">
+                <button onclick="appState.navigateTo('shop','all')" class="px-6 py-3 bg-vanguard-accent text-xs font-bold uppercase tracking-widest rounded shadow-lg text-white">Initialize Full Matrix Catalog</button>
+            </div>
+        </section>
+
+        <!-- CHECKOUT MATRIX PROFILE VIEW -->
+        <section id="view-checkout" class="view-section max-w-4xl mx-auto space-y-6">
+            <div class="border-b border-vanguard-border pb-4">
+                <h1 class="text-2xl font-black uppercase tracking-wider text-white">Settlement Hub Profile</h1>
+                <p class="text-xs text-gray-400 font-medium mt-0.5">Finalize item inventory properties and complete acquisition transit routing instructions.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Cart Content Targets -->
+                <div class="lg:col-span-2 space-y-4" id="checkout-cart-items-target">
+                    <!-- Loaded dynamically via state parameters -->
+                </div>
+
+                <!-- Financial Settlement Calculation Ledger Summary Box -->
+                <div class="bg-vanguard-card border border-vanguard-border rounded-xl p-5 space-y-4 h-fit">
+                    <h3 class="text-sm font-black text-white uppercase tracking-wider border-b border-vanguard-border pb-2">Financial Summary Ledger</h3>
+                    
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between text-gray-400">
+                            <span>Gross Line Cost</span>
+                            <span id="summary-gross-cost">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-vanguard-emerald font-semibold">
+                            <span>Promo Reduction Balance</span>
+                            <span id="summary-discount-amount">-$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-gray-400">
+                            <span>Estimated Transit Overhead</span>
+                            <span class="uppercase font-bold text-vanguard-emerald">Free Transit</span>
+                        </div>
+                        <div class="border-t border-vanguard-border/60 my-2 pt-2 flex justify-between text-sm font-black text-white uppercase">
+                            <span>Net Settlement Cost</span>
+                            <span id="summary-net-cost">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Promo Code Integration Box -->
+                    <div class="space-y-1.5 pt-2">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400">Promo Validation Settlement</label>
+                        <div class="flex space-x-2">
+                            <input type="text" id="checkout-promo-input" placeholder="VANGUARD50" class="flex-grow bg-vanguard-dark border border-vanguard-border rounded px-2.5 py-1.5 text-xs text-white uppercase placeholder-gray-600 focus:outline-none focus:border-vanguard-accent">
+                            <button onclick="appState.applyPromoCode()" class="px-3 py-1.5 bg-vanguard-border hover:bg-gray-700 text-xs font-bold uppercase tracking-wider rounded text-white transition-all">Verify</button>
+                        </div>
+                    </div>
+
+                    <button onclick="appState.executeCheckoutPayment()" class="w-full py-3 bg-vanguard-emerald hover:bg-emerald-600 text-white rounded text-xs font-bold tracking-widest uppercase transition-all shadow-xl hover:scale-[1.01]">Execute Acquisition Settlement</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER SYSTEM HUB & LOCALIZATION -->
+    <footer class="bg-vanguard-card border-t border-vanguard-border/60 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+            
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-vanguard-border pb-8">
+                <!-- Branding Localization Selector Module -->
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-6 h-6 rounded bg-vanguard-accent flex items-center justify-center font-black text-white text-xs">V</div>
+                        <span class="font-black text-lg tracking-widest text-white">VANGUARD WORLDWIDE</span>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3">
+                        <!-- Country Selector Mapping -->
+                        <div class="flex flex-col">
+                            <label class="text-[9px] font-bold uppercase text-gray-500 mb-0.5">Deployment Country</label>
+                            <select id="footer-country-selector" onchange="appState.updateLocalization()" class="bg-vanguard-dark border border-vanguard-border rounded px-2 py-1 text-xs text-gray-300 focus:outline-none">
+                                <option value="Pakistan">Pakistan (PKR Ecosystem)</option>
+                                <option value="United States">United States (USD Hub)</option>
+                                <option value="United Kingdom">United Kingdom (GBP Hub)</option>
+                            </select>
+                        </div>
+                        <!-- Language Mapping -->
+                        <div class="flex flex-col">
+                            <label class="text-[9px] font-bold uppercase text-gray-500 mb-0.5">Linguistic Syntax</label>
+                            <select id="footer-language-selector" onchange="appState.updateLocalization()" class="bg-vanguard-dark border border-vanguard-border rounded px-2 py-1 text-xs text-gray-300 focus:outline-none">
+                                <option value="English UK">English UK (Standard)</option>
+                                <option value="Urdu">Urdu (Regional)</option>
+                            </select>
+                        </div>
+                        <!-- Currency Identifier mapping -->
+                        <div class="flex flex-col">
+                            <label class="text-[9px] font-bold uppercase text-gray-500 mb-0.5">Settlement Currency</label>
+                            <select id="footer-currency-selector" onchange="appState.updateLocalization()" class="bg-vanguard-dark border border-vanguard-border rounded px-2 py-1 text-xs text-gray-300 focus:outline-none">
+                                <option value="USD">USD ($ Current)</option>
+                                <option value="PKR">PKR (Rs Settlement)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Status Tracking Metrics Panel -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-medium text-gray-400 bg-vanguard-dark/40 border border-vanguard-border p-4 rounded-xl w-full md:w-auto">
+                    <div class="space-y-0.5 pr-2 border-r border-vanguard-border/40">
+                        <p class="text-[9px] uppercase tracking-wider text-gray-500 font-extrabold">Public Reviews</p>
+                        <p class="text-white font-bold text-xs" id="footer-review-metric">No reviews yet</p>
+                    </div>
+                    <div class="space-y-0.5 pr-2 sm:border-r border-vanguard-border/40 pl-2">
+                        <p class="text-[9px] uppercase tracking-wider text-gray-500 font-extrabold">Processed Sales</p>
+                        <p class="text-white font-bold text-xs" id="footer-sales-metric">0 sales</p>
+                    </div>
+                    <div class="space-y-0.5 pr-2 border-r border-vanguard-border/40 pl-2">
+                        <p class="text-[9px] uppercase tracking-wider text-gray-500 font-extrabold">Domain Tenure</p>
+                        <p class="text-white font-bold text-xs">1 year on Vanguard</p>
+                    </div>
+                    <div class="space-y-0.5 pl-2">
+                        <p class="text-[9px] uppercase tracking-wider text-gray-500 font-extrabold">Region Zone</p>
+                        <p class="text-vanguard-amber font-bold text-xs" id="footer-zone-metric">Pakistan</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-500 font-medium">
+                <p>&copy; 2026 VANGUARD Logistics Labs. Architectural defense profiles compiled globally.</p>
+                <div class="flex space-x-4 mt-2 sm:mt-0">
+                    <a href="#" class="hover:text-white transition-colors">Security Node Protocols</a>
+                    <a href="#" class="hover:text-white transition-colors">Transit Terminals</a>
+                </div>
+            </div>
+            
+            <!-- Live Active System Log Stream Tracker -->
+            <div class="bg-vanguard-dark border border-vanguard-border/60 rounded p-2.5 text-center text-[10px] font-mono text-gray-500">
+                <i class="fas fa-satellite-dish mr-1 text-vanguard-amber"></i> Latest Node Action Tracker: <span id="footer-live-activity" class="text-gray-300 font-semibold">System initialized in Pakistan region zone.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- LOGISTICS LOGIC MATRIX SYSTEM SCRIPT -->
+    <script>
+        // MASTER CATALOG REPOSITORY ARRAY DATA SEED
+        const INITIAL_CATALOG_PRODUCTS = [
+            { id: "vng-m1", name: "Thermo-Biometric Parka Shield", category: "men", price: 340, color: "Black", season: "Winter", image: "https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&fit=crop&w=400&q=80", isDiscounted50: false, likedCount: 42, userLiked: false, followed: false },
+            { id: "vng-m2", name: "Stealth Alpine Deployment Coat", category: "men", price: 290, color: "Olive", season: "Winter", image: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=400&q=80", isDiscounted50: false, likedCount: 19, userLiked: false, followed: false },
+            { id: "vng-m3", name: "Modular Field Cargo Layer", category: "men", price: 210, color: "Navy", season: "Fall", image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=400&q=80", isDiscounted50: false, likedCount: 8, userLiked: false, followed: false },
+            { id: "vng-w1", name: "Aegis Matrix Shell Coat", category: "women", price: 310, color: "Black", season: "Winter", image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80", isDiscounted50: false, likedCount: 61, userLiked: false, followed: false },
+            { id: "vng-w2", name: "Kevlar Hybrid Utility Trench", category: "women", price: 380, color: "Brown", season: "Winter", image: "https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=400&q=80", isDiscounted50: false, likedCount: 33, userLiked: false, followed: false },
+            { id: "vng-w3", name: "Lightweight Desert Windbreaker", category: "women", price: 160, color: "Olive", season: "Summer", image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=400&q=80", isDiscounted50: false, likedCount: 14, userLiked: false, followed: false },
+            { id: "vng-l1", name: "Top-Grain Cafe Racer Armor", category: "leather", price: 490, color: "Black", season: "Fall", image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=400&q=80", isDiscounted50: false, likedCount: 104, userLiked: false, followed: false },
+            { id: "vng-l2", name: "Vintage Mahogany Flight Jacket", category: "leather", price: 520, color: "Brown", season: "Winter", image: "https://images.unsplash.com/photo-1495105787522-5334e3ffa0ef?auto=format&fit=crop&w=400&q=80", isDiscounted50: false, likedCount: 89, userLiked: false, followed: false }
+        ];
+
+        class VanguardApplicationEngine {
+            constructor() {
+                this.products = [...INITIAL_CATALOG_PRODUCTS];
+                this.cart = [];
+                this.currentUser = null; 
+                this.authMode = 'signin'; 
+                this.activePromoApplied = false;
+                this.currentView = 'home';
+                this.currentCategoryFilter = 'all';
+                this.salesCount = 0;
+                this.liveTraffic = 142;
+                this.brandFollowers = 12402;
+                this.brandLikes = 84119;
+                this.brandFollowedByUser = false;
+                this.brandLikedByUser = false;
+                
+                this.activityLogs = [
+                    "Security validation framework deployed.",
+                    "Live traffic counting module active."
+                ];
+            }
+
+            init() {
+                this.renderAllDynamicLayers();
+                this.pushLog("Vanguard core initialization routine completed successfully.");
+                
+                // Traffic counter logic
+                setInterval(() => {
+                    this.liveTraffic += Math.floor(Math.random() * 5) - 2;
+                    if(this.liveTraffic < 100) this.liveTraffic = 125;
+                    document.getElementById('nav-traffic-counter').innerText = this.liveTraffic;
+                    const adminTraffic = document.getElementById('admin-stat-traffic-count');
+                    if(adminTraffic) adminTraffic.innerText = `${this.liveTraffic} Users`;
+                }, 4000);
+            }
+
+            pushLog(text) {
+                const timestamp = new Date().toLocaleTimeString();
+                const logMsg = `[${timestamp}] ${text}`;
+                this.activityLogs.unshift(logMsg);
+                if(this.activityLogs.length > 20) this.activityLogs.pop();
+                
+                this.refreshActivityLogsUI();
+                document.getElementById('footer-live-activity').innerText = logMsg;
+            }
+
+            refreshActivityLogsUI() {
+                const target = document.getElementById('admin-activity-log-box');
+                if(!target) return;
+                target.innerHTML = this.activityLogs.map(l => `<div class="border-b border-vanguard-border/30 pb-0.5">${l}</div>`).join('');
+            }
+
+            showToast(title, msg, isError = false) {
+                const toast = document.getElementById('global-toast');
+                const tTitle = document.getElementById('toast-title');
+                const tMsg = document.getElementById('toast-msg');
+                
+                toast.className = toast.className.replace('border-vanguard-emerald', 'border-vanguard-accent');
+                toast.className = toast.className.replace('border-vanguard-accent', isError ? 'border-vanguard-accent' : 'border-vanguard-emerald');
+                
+                tTitle.innerText = title;
+                tMsg.innerText = msg;
+                
+                toast.style.transform = "translateX(0)";
+                setTimeout(() => {
+                    toast.style.transform = "translateX(150%)";
+                }, 3500);
+            }
+
+            navigateTo(viewId, categoryParam = 'all') {
+                if (viewId === 'admin') {
+                    if (!this.currentUser || this.currentUser.role !== 'admin') {
+                        this.showToast("Access Restricted", "Administrative Hub visualization requires Owner elevation credentials.", true);
+                        this.navigateTo('auth');
+                        return;
+                    }
+                }
+
+                this.currentView = viewId;
+                this.currentCategoryFilter = categoryParam;
+
+                // Toggle active views
+                document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+                const targetedSection = document.getElementById(`view-auth`);
+                
+                const activeSection = document.getElementById(`view-${viewId}`);
+                if(activeSection) activeSection.classList.add('active');
+
+                // Update Navbar indicators
+                document.querySelectorAll('#desktop-nav button').forEach(btn => btn.classList.remove('text-vanguard-accent', 'font-black'));
+                const activeNavBtn = document.getElementById(`nav-${categoryParam !== 'all' ? categoryParam : viewId}`);
+                if(activeNavBtn) activeNavBtn.classList.add('text-vanguard-accent', 'font-black');
+
+                if (viewId === 'shop') {
+                    this.renderCatalogGrid();
+                } else if (viewId === 'home') {
+                    this.renderHomepageFeatured();
+                } else if (viewId === 'checkout') {
+                    this.renderCheckoutCartLedger();
+                } else if (viewId === 'admin') {
+                    this.renderAdminInventorySpreadsheet();
+                }
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                this.pushLog(`Navigated viewport allocation to layout profile: ${viewId.toUpperCase()}`);
+            }
+
+            toggleMobileMenu() {
+                const menu = document.getElementById('mobile-menu');
+                menu.classList.toggle('hidden');
+            }
+
+            renderAllDynamicLayers() {
+                this.renderAuthStatusBox();
+                this.renderHomepageFeatured();
+                this.updateCartCounterBadge();
+                this.updateLocalizationUI();
+                document.getElementById('total-sku-counter').innerText = this.products.length;
+            }
+
+            renderAuthStatusBox() {
+                const container = document.getElementById('auth-status-container');
+                if (!this.currentUser) {
+                    container.innerHTML = `
+                        <button onclick="appState.navigateTo('auth')" class="text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-white border border-vanguard-border px-3 py-1.5 rounded transition-all">
+                            <i class="fas fa-sign-in-alt mr-1"></i> Sign In / Up
+                        </button>
+                    `;
+                } else {
+                    const isAdmin = this.currentUser.role === 'admin';
+                    container.innerHTML = `
+                        <div class="flex items-center space-x-2 bg-vanguard-card px-3 py-1 border border-vanguard-border rounded">
+                            <i class="fas fa-user-circle ${isAdmin ? 'text-vanguard-amber' : 'text-vanguard-emerald'} text-sm"></i>
+                            <div class="text-left leading-none">
+                                <p class="text-[10px] font-bold text-white max-w-[80px] truncate">${this.currentUser.email}</p>
+                                <p class="text-[8px] uppercase tracking-wider text-gray-400 font-black">${this.currentUser.role}</p>
+                            </div>
+                            <button onclick="appState.handleSignOut()" class="text-gray-400 hover:text-vanguard-accent text-xs pl-1" title="Sign Out Profile">
+                                <i class="fas fa-power-off"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            toggleAuthMode() {
+                this.authMode = this.authMode === 'signin' ? 'signup' : 'signin';
+                document.getElementById('auth-title').innerText = this.authMode === 'signin' ? 'Sign In' : 'Create Blueprint';
+                document.getElementById('auth-subtitle').innerText = this.authMode === 'signin' ? 'Access your customized Vanguard climate deployment dashboard.' : 'Register file portfolio details to initiate procurement routing tracking.';
+                document.getElementById('auth-toggle-mode-btn').innerText = this.authMode === 'signin' ? 'Need an operational file? Create user portfolio.' : 'Existing authorization file? Proceed to login portal.';
+            }
+
+            handleAuthSubmission(e) {
+                e.preventDefault();
+                const email = document.getElementById('auth-email').value;
+                const pass = document.getElementById('auth-password').value;
+                const role = document.querySelector('input[name="auth-role"]:checked').value;
+
+                if (email === 'admin@vanguard.com' && pass === 'admin123') {
+                    this.currentUser = { email, role: 'admin' };
+                } else {
+                    this.currentUser = { email, role: role };
+                }
+
+                this.showToast("Identity Verified", `Logged into profile node as authorized ${this.currentUser.role.toUpperCase()}.`);
+                this.pushLog(`Authenticated node identity: ${this.currentUser.email} (${this.currentUser.role})`);
+                this.renderAllDynamicLayers();
+                
+                if(this.currentUser.role === 'admin') {
+                    this.navigateTo('admin');
+                } else {
+                    this.navigateTo('home');
+                }
+            }
+
+            handleSignOut() {
+                this.pushLog(`De-authorized security profile token for: ${this.currentUser.email}`);
+                this.currentUser = null;
+                this.renderAllDynamicLayers();
+                this.navigateTo('home');
+                this.showToast("Signed Out", "Terminated secure operational portal access token.");
+            }
+
+            // FRONT PAGE SOCIAL ENGAGEMENT UTILITY
+            toggleBrandFollow() {
+                this.brandFollowedByUser = !this.brandFollowedByUser;
+                this.brandFollowers += this.brandFollowedByUser ? 1 : -1;
+                
+                const btn = document.getElementById('brand-follow-btn');
+                if (this.brandFollowedByUser) {
+                    btn.className = "px-3 py-1.5 bg-vanguard-emerald text-white font-bold text-[11px] tracking-wider uppercase rounded transition-all flex items-center space-x-1";
+                    btn.innerHTML = `<i class="fas fa-check"></i> <span>Following</span>`;
+                    this.showToast("Subscribed", "You are now following Vanguard Tactical Logistics labs updates.");
+                } else {
+                    btn.className = "px-3 py-1.5 bg-white text-vanguard-dark hover:bg-gray-200 font-bold text-[11px] tracking-wider uppercase rounded transition-all flex items-center space-x-1";
+                    btn.innerHTML = `<i class="fas fa-plus"></i> <span>Follow</span>`;
+                }
+                this.updateBrandSocialStatsUI();
+            }
+
+            toggleBrandLike() {
+                this.brandLikedByUser = !this.brandLikedByUser;
+                this.brandLikes += this.brandLikedByUser ? 1 : -1;
+
+                const btn = document.getElementById('brand-like-btn');
+                if (this.brandLikedByUser) {
+                    btn.innerHTML = `<i class="fas fa-heart text-vanguard-accent"></i> <span>Liked</span>`;
+                    this.showToast("Endorsed Brand", "Registered positive sentiment metric value onto primary server nodes.");
+                } else {
+                    btn.innerHTML = `<i class="far fa-heart text-vanguard-accent"></i> <span>Like</span>`;
+                }
+                this.updateBrandSocialStatsUI();
+            }
+
+            updateBrandSocialStatsUI() {
+                document.getElementById('brand-social-stats').innerText = `${this.brandFollowers.toLocaleString()} Followers · ${this.brandLikes.toLocaleString()} Likes`;
+            }
+
+            toggleProductLike(prodId, event) {
+                if(event) event.stopPropagation();
+                const prod = this.products.find(p => p.id === prodId);
+                if(!prod) return;
+
+                prod.userLiked = !prod.userLiked;
+                prod.likedCount += prod.userLiked ? 1 : -1;
+                
+                this.showToast(prod.userLiked ? "SKU Endorsed" : "Sentiment Removed", `${prod.name} total index tracking recalculated.`);
+                
+                if(this.currentView === 'home') this.renderHomepageFeatured();
+                if(this.currentView === 'shop') this.renderCatalogGrid();
+            }
+
+            toggleProductFollow(prodId, event) {
+                if(event) event.stopPropagation();
+                const prod = this.products.find(p => p.id === prodId);
+                if(!prod) return;
+
+                prod.followed = !prod.followed;
+                this.showToast(prod.followed ? "Alert Channel Configured" : "Alert Dismissed", `Tracking logistics price revisions for ${prod.name}`);
+                
+                if(this.currentView === 'home') this.renderHomepageFeatured();
+                if(this.currentView === 'shop') this.renderCatalogGrid();
+            }
+
+            // CARDS UI CONSTRUCTOR METHOD
+            generateProductCardMarkup(p) {
+                const effectivePrice = p.isDiscounted50 ? Math.floor(p.price * 0.5) : p.price;
+                return `
+                    <div class="product-card-hover bg-vanguard-card border border-vanguard-border/60 rounded-xl overflow-hidden shadow-xl flex flex-col h-full relative group">
+                        <!-- Top Floating Badges -->
+                        <div class="absolute top-3 left-3 z-10 flex flex-col space-y-1">
+                            ${p.isDiscounted50 ? '<span class="bg-vanguard-accent text-white text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded shadow">50% PROMO REDUCTION</span>' : ''}
+                            <span class="bg-vanguard-dark/80 backdrop-blur text-gray-300 text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border border-vanguard-border">${p.season} Collection</span>
+                        </div>
+
+                        <!-- Product Asset Media Frame -->
+                        <div class="h-52 overflow-hidden bg-vanguard-dark relative">
+                            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-vanguard-dark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3 space-x-2">
+                                <button onclick="appState.toggleProductFollow('${p.id}', event)" class="p-2 bg-vanguard-dark/90 border border-vanguard-border rounded text-xs text-gray-300 hover:text-white" title="Track Price Adjustments">
+                                    <i class="${p.followed ? 'fas' : 'far'} fa-bell text-vanguard-amber"></i>
+                                </button>
+                                <button onclick="appState.toggleProductLike('${p.id}', event)" class="p-2 bg-vanguard-dark/90 border border-vanguard-border rounded text-xs text-gray-300 hover:text-white" title="Like SKU">
+                                    <i class="${p.userLiked ? 'fas' : 'far'} fa-heart text-vanguard-accent"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card Metadata Content Box -->
+                        <div class="p-4 flex-grow flex flex-col justify-between space-y-3">
+                            <div class="space-y-1">
+                                <p class="text-[9px] font-black uppercase tracking-widest text-vanguard-accent">${p.category.replace('acc_', 'Hardware ')} Variant</p>
+                                <h4 class="text-xs font-bold text-white uppercase tracking-wider line-clamp-1">${p.name}</h4>
+                                <div class="flex items-center space-x-2 text-[10px] text-gray-400">
+                                    <span>Color: <strong class="text-gray-200">${p.color}</strong></span>
+                                    <span>·</span>
+                                    <span><i class="fas fa-heart text-vanguard-accent/60 mr-0.5"></i> ${p.likedCount}</span>
+                                </div>
+                            </div>
+
+                            <div class="pt-2 border-t border-vanguard-border/40 flex items-center justify-between">
+                                <div class="leading-none">
+                                    ${p.isDiscounted50 ? `
+                                        <span class="text-[10px] text-gray-500 line-through">$${p.price}</span>
+                                        <p class="text-sm font-black text-vanguard-emerald">$${effectivePrice}</p>
+                                    ` : `
+                                        <p class="text-sm font-black text-white">$${p.price}</p>
+                                    `}
+                                </div>
+                                <div class="flex space-x-1">
+                                    <button onclick="appState.addSKUToCart('${p.id}', true)" class="px-2 py-1 bg-vanguard-accent hover:bg-vanguard-accentHover text-[10px] font-extrabold uppercase tracking-wider text-white rounded transition-all">Buy Now</button>
+                                    <button onclick="appState.addSKUToCart('${p.id}', false)" class="p-1 bg-vanguard-dark border border-vanguard-border text-gray-300 hover:text-white rounded text-xs" title="Add to Line Bag"><i class="fas fa-shopping-cart"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderHomepageFeatured() {
+                const target = document.getElementById('homepage-featured-target');
+                if(!target) return;
+                
+                // Pull first 4 products
+                const featured = this.products.slice(0, 4);
+                target.innerHTML = featured.map(p => this.generateProductCardMarkup(p)).join('');
+            }
+
+            renderCatalogGrid() {
+                const target = document.getElementById('catalog-products-target');
+                if(!target) return;
+
+                document.getElementById('catalog-header-title').innerText = `${this.currentCategoryFilter.toUpperCase()} CATALOG MANIFEST`;
+
+                let filtered = this.products;
+                if (this.currentCategoryFilter !== 'all') {
+                    if (this.currentCategoryFilter === 'winter' || this.currentCategoryFilter === 'summer') {
+                        filtered = this.products.filter(p => p.season.toLowerCase() === this.currentCategoryFilter);
+                    } else {
+                        filtered = this.products.filter(p => p.category === this.currentCategoryFilter);
+                    }
+                }
+
+                if (filtered.length === 0) {
+                    target.innerHTML = `
+                        <div class="col-span-full py-12 text-center border border-dashed border-vanguard-border rounded-xl">
+                            <i class="fas fa-database text-2xl text-gray-600 mb-2"></i>
+                            <p class="text-xs text-gray-400 font-mono">No matching climate defense units catalogued under this query segment.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                target.innerHTML = filtered.map(p => this.generateProductCardMarkup(p)).join('');
+            }
+
+            sortCatalog(criteria) {
+                if (criteria === 'price-asc') {
+                    this.products.sort((a,b) => (a.isDiscounted50?a.price*0.5:a.price) - (b.isDiscounted50?b.price*0.5:b.price));
+                } else if (criteria === 'price-desc') {
+                    this.products.sort((a,b) => (b.isDiscounted50?b.price*0.5:b.price) - (a.isDiscounted50?a.price*0.5:a.price));
+                } else {
+                    this.products = [...INITIAL_CATALOG_PRODUCTS];
+                }
+                this.renderCatalogGrid();
+            }
+
+            applyFilters() {
+                this.showToast("Filters Ingested", "Re-evaluating dynamic physical property matrices.");
+                this.renderCatalogGrid();
+            }
+
+            resetFilters() {
+                document.querySelectorAll('.matrix-filter').forEach(select => select.value = 'all');
+                this.showToast("Filters Cleared", "Restored standard linear inventory layout visibility.");
+                this.renderCatalogGrid();
+            }
+
+            triggerNavbarAddCart() {
+                if(this.products.length > 0) {
+                    this.addSKUToCart(this.products[0].id, false);
+                }
+            }
+
+            triggerDirectBuy() {
+                if(this.products.length > 0) {
+                    this.addSKUToCart(this.products[0].id, true);
+                }
+            }
+
+            triggerGlobalSearch() {
+                const term = document.getElementById('global-search-input').value.trim().toLowerCase();
+                if(!term) return;
+
+                this.showToast("Catalog Searched", `Filtering records matching syntax token: "${term}"`);
+                this.navigateTo('shop', 'all');
+                
+                const target = document.getElementById('catalog-products-target');
+                const matched = this.products.filter(p => p.name.toLowerCase().includes(term) || p.color.toLowerCase().includes(term));
+                
+                if(matched.length === 0) {
+                    target.innerHTML = `<div class="col-span-full text-center py-8 font-mono text-xs text-gray-500">Zero database rows matched search string token entry.</div>`;
+                } else {
+                    target.innerHTML = matched.map(p => this.generateProductCardMarkup(p)).join('');
+                }
+            }
+
+            // CART LOGISTICS ENGINE
+            addSKUToCart(prodId, bypassDirectlyToCheckout = false) {
+                const prod = this.products.find(p => p.id === prodId);
+                if(!prod) return;
+
+                const existingItem = this.cart.find(item => item.product.id === prodId);
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    this.cart.push({ product: prod, quantity: 1 });
+                }
+
+                this.updateCartCounterBadge();
+                this.showToast("SKU Allocated", `Staged ${prod.name} inside operational procurement queue ledger.`);
+                this.pushLog(`Added item chunk to local transaction matrix buffer: ${prod.name}`);
+
+                if (bypassDirectlyToCheckout) {
+                    this.navigateTo('checkout');
+                }
+            }
+
+            updateCartCounterBadge() {
+                const total = this.cart.reduce((sum, item) => sum + item.quantity, 0);
+                document.getElementById('cart-counter-badge').innerText = total;
+            }
+
+            modifyCartQty(prodId, delta) {
+                const idx = this.cart.findIndex(item => item.product.id === prodId);
+                if(idx === -1) return;
+
+                this.cart[idx].quantity += delta;
+                if (this.cart[idx].quantity <= 0) {
+                    this.cart.splice(idx, 1);
+                    this.showToast("SKU Evicted", "Removed inventory item from ledger balance stack.");
+                }
+
+                this.updateCartCounterBadge();
+                this.renderCheckoutCartLedger();
+            }
+
+            renderCheckoutCartLedger() {
+                const target = document.getElementById('checkout-cart-items-target');
+                if(!target) return;
+
+                if (this.cart.length === 0) {
+                    target.innerHTML = `
+                        <div class="p-8 border border-vanguard-border rounded-xl text-center font-mono text-xs text-gray-500 bg-vanguard-card/30">
+                            Procurement transaction ledger stack is empty. Initialize inventory mapping selections from the catalog.
+                        </div>
+                    `;
+                    this.updateFinancialLedgerTotals(0);
+                    return;
+                }
+
+                let grossTotal = 0;
+                let htmlMarkup = this.cart.map(item => {
+                    const p = item.product;
+                    const singlePrice = p.isDiscounted50 ? Math.floor(p.price * 0.5) : p.price;
+                    const lineCost = singlePrice * item.quantity;
+                    grossTotal += (p.price * item.quantity);
+
+                    return `
+                        <div class="bg-vanguard-card border border-vanguard-border p-4 rounded-xl flex items-center justify-between gap-4">
+                            <div class="flex items-center space-x-3">
+                                <img src="${p.image}" class="w-12 h-12 rounded object-cover bg-vanguard-dark border border-vanguard-border">
+                                <div>
+                                    <h4 class="text-xs font-bold text-white uppercase">${p.name}</h4>
+                                    <p class="text-[10px] text-gray-400 font-mono">Unit Price Index: $${singlePrice} ${p.isDiscounted50 ? '(50% Applied)':''}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center space-x-2 bg-vanguard-dark border border-vanguard-border rounded px-2 py-1">
+                                    <button onclick="appState.modifyCartQty('${p.id}', -1)" class="text-gray-400 hover:text-white px-1 text-xs font-bold">-</button>
+                                    <span class="text-xs font-mono font-bold text-white px-1">${item.quantity}</span>
+                                    <button onclick="appState.modifyCartQty('${p.id}', 1)" class="text-gray-400 hover:text-white px-1 text-xs font-bold">+</button>
+                                </div>
+                                <span class="text-xs font-black text-white font-mono w-16 text-right">$${lineCost}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                target.innerHTML = htmlMarkup;
+                this.updateFinancialLedgerTotals(grossTotal);
+            }
+
+            updateFinancialLedgerTotals(grossTotal) {
+                let discountVal = 0;
+                
+                // Calculate item discount reductions explicitly
+                this.cart.forEach(item => {
+                    if (item.product.isDiscounted50) {
+                        discountVal += (item.product.price * 0.5) * item.quantity;
+                    }
+                });
+
+                if (this.activePromoApplied) {
+                    // Apply global code reduction layer
+                    const remainingValue = grossTotal - discountVal;
+                    discountVal += (remainingValue * 0.5);
+                }
+
+                const netTotal = grossTotal - discountVal;
+
+                document.getElementById('summary-gross-cost').innerText = `$${grossTotal.toFixed(2)}`;
+                document.getElementById('summary-discount-amount').innerText = `-$${discountVal.toFixed(2)}`;
+                document.getElementById('summary-net-cost').innerText = `$${netTotal.toFixed(2)}`;
+            }
+
+            applyPromoCode() {
+                const val = document.getElementById('checkout-promo-input').value.trim().toUpperCase();
+                if (val === 'VANGUARD50') {
+                    this.activePromoApplied = true;
+                    this.showToast("Promo Code Ingested", "Global 50% discount modifier matrix successfully added to remaining ledger totals.");
+                    this.pushLog("Executed global checkout coupon modification sequence.");
+                    this.renderCheckoutCartLedger();
+                } else {
+                    this.showToast("Invalid Key Signature", "Supplied hash sequence match not found within regional clearing arrays.", true);
+                }
+            }
+
+            executeCheckoutPayment() {
+                if(this.cart.length === 0) return;
+                
+                this.salesCount += this.cart.reduce((sum, item) => sum + item.quantity, 0);
+                this.showToast("Acquisition Complete", "Financial balance cleared. Dispatch routing instructions committed to worldwide hubs.");
+                this.pushLog(`Processed settlement clearing event. Dispatched ${this.cart.length} unique items.`);
+                
+                this.cart = [];
+                this.activePromoApplied = false;
+                
+                // Update metrics mirrors
+                document.getElementById('footer-sales-metric').innerText = `${this.salesCount} sales`;
+                document.getElementById('footer-review-metric').innerText = `Verified Customer Ledger Active`;
+                const adminSales = document.getElementById('admin-stat-sales-count');
+                if(adminSales) adminSales.innerText = `${this.salesCount} Sales`;
+
+                this.updateCartCounterBadge();
+                this.navigateTo('home');
+            }
+
+            // ADMINISTRATIVE SKU MANAGEMENT BUSINESS LOGIC
+            renderAdminInventorySpreadsheet() {
+                const target = document.getElementById('admin-inventory-table-target');
+                if(!target) return;
+
+                target.innerHTML = this.products.map(p => `
+                    <tr class="hover:bg-vanguard-dark/40 transition-colors border-b border-vanguard-border/30 text-xs">
+                        <td class="p-4 flex items-center space-x-3">
+                            <img src="${p.image}" class="w-8 h-8 rounded object-cover bg-vanguard-dark border border-vanguard-border">
+                            <div>
+                                <p class="font-bold text-white uppercase">${p.name}</p>
+                                <p class="text-[10px] text-gray-500 font-mono">${p.id}</p>
+                            </div>
+                        </td>
+                        <td class="p-4">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-vanguard-border text-gray-300 border border-vanguard-border/80">${p.category}</span>
+                        </td>
+                        <td class="p-4 font-mono font-bold text-white">$${p.price}</td>
+                        <td class="p-4">
+                            <button onclick="appState.toggleAdminProductPromo50('${p.id}')" class="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition-all ${p.isDiscounted50 ? 'bg-vanguard-accent text-white border-vanguard-accent' : 'bg-vanguard-dark text-gray-400 border-vanguard-border hover:text-white'}">
+                                ${p.isDiscounted50 ? 'Active 50% Reduction' : 'Inject 50% Off'}
+                            </button>
+                        </td>
+                        <td class="p-4 text-right space-x-2">
+                            <button onclick="appState.openEditProductModal('${p.id}')" class="text-vanguard-amber hover:text-amber-400 p-1 font-semibold uppercase text-[11px]"><i class="fas fa-edit mr-0.5"></i> Edit</button>
+                            <button onclick="appState.deleteSKU('${p.id}')" class="text-vanguard-accent hover:text-red-400 p-1 font-semibold uppercase text-[11px]"><i class="fas fa-trash-alt mr-0.5"></i> Purge</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            toggleAdminProductPromo50(prodId) {
+                const prod = this.products.find(p => p.id === prodId);
+                if(!prod) return;
+
+                prod.isDiscounted50 = !prod.isDiscounted50;
+                this.showToast("Price State Vector Changed", `Toggled isolated 50% checkout discount value mapping for ${prod.name}`);
+                this.pushLog(`Modified single item deduction status code parameters for item ${prodId}`);
+                this.renderAdminInventorySpreadsheet();
+            }
+
+            deleteSKU(prodId) {
+                if(confirm("Purge selected climate apparel hardware item completely from central catalog matrix data stacks?")) {
+                    this.products = this.products.filter(p => p.id !== prodId);
+                    this.showToast("SKU Purged", "Inventory data array segment scrubbed from mainframes.");
+                    this.pushLog(`Executed definitive operational delete query sequence on item ID: ${prodId}`);
+                    this.renderAdminInventorySpreadsheet();
+                    document.getElementById('total-sku-counter').innerText = this.products.length;
+                }
+            }
+
+            openAddProductModal() {
+                document.getElementById('product-modal-title').innerText = "Upload New Climate Hardware SKU";
+                document.getElementById('product-modal-form').reset();
+                document.getElementById('product-modal-id').value = "";
+                document.getElementById('product-modal-backdrop').classList.remove('hidden');
+            }
+
+            openEditProductModal(prodId) {
+                const p = this.products.find(p => p.id === prodId);
+                if(!p) return;
+
+                document.getElementById('product-modal-title').innerText = `Modify Existing Unit Structural Parameters`;
+                document.getElementById('product-modal-id').value = p.id;
+                document.getElementById('product-modal-name').value = p.name;
+                document.getElementById('product-modal-category').value = p.category;
+                document.getElementById('product-modal-price').value = p.price;
+                document.getElementById('product-modal-color').value = p.color;
+                document.getElementById('product-modal-season').value = p.season;
+                document.getElementById('product-modal-image').value = p.image;
+
+                document.getElementById('product-modal-backdrop').classList.remove('hidden');
+            }
+
+            closeProductModal() {
+                document.getElementById('product-modal-backdrop').classList.add('hidden');
+            }
+
+            handleProductUpsert(e) {
+                e.preventDefault();
+                const id = document.getElementById('product-modal-id').value;
+                const name = document.getElementById('product-modal-name').value;
+                const category = document.getElementById('product-modal-category').value;
+                const price = parseInt(document.getElementById('product-modal-price').value);
+                const color = document.getElementById('product-modal-color').value;
+                const season = document.getElementById('product-modal-season').value;
+                const image = document.getElementById('product-modal-image').value;
+
+                if (id) {
+                    // Update layout array entry
+                    const p = this.products.find(prod => prod.id === id);
+                    if(p) {
+                        p.name = name; p.category = category; p.price = price;
+                        p.color = color; p.season = season; p.image = image;
+                    }
+                    this.showToast("SKU Recalibrated", "Structural variant properties revised successfully.");
+                    this.pushLog(`Committed catalog record alteration query routines for item ID: ${id}`);
+                } else {
+                    // Insert brand new configuration mapping array sequence
+                    const newId = `vng-custom-${Date.now().toString().slice(-4)}`;
+                    this.products.push({
+                        id: newId, name, category, price, color, season, image,
+                        isDiscounted50: false, likedCount: 0, userLiked: false, followed: false
+                    });
+                    this.showToast("Upload Successful", "New high-performance physical layout added to regional databases.");
+                    this.pushLog(`Created new transactional data object schema entity layout inside memory: ${newId}`);
+                }
+
+                this.closeProductModal();
+                this.renderAdminInventorySpreadsheet();
+                document.getElementById('total-sku-counter').innerText = this.products.length;
+            }
+
+            // LOCALIZATION COMPILATION ENGINE
+            updateLocalization() {
+                const country = document.getElementById('footer-country-selector').value;
+                const lang = document.getElementById('footer-language-selector').value;
+                const curr = document.getElementById('footer-currency-selector').value;
+
+                this.showToast("Localization Swapped", `Routing terminal settings mapped onto ${country} / ${curr} context definitions.`);
+                this.pushLog(`Swapped localized client settings to parameters: (${country}, ${lang}, ${curr})`);
+                this.updateLocalizationUI();
+            }
+
+            updateLocalizationUI() {
+                const country = document.getElementById('footer-country-selector').value;
+                document.getElementById('footer-zone-metric').innerText = country;
+            }
+        }
+
+        // INITIALIZE ENGINE INTERFACE LAYER ON WIND LOAD FRAME
+        const appState = new VanguardApplicationEngine();
+        window.addEventListener('DOMContentLoaded', () => appState.init());
+    </script>
+</body>
+</html>

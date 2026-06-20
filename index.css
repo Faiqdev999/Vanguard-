@@ -1,0 +1,98 @@
+/* ==========================================================================
+   VANGUARD PLATFORM CORE MATRIX STYLESHEET
+   ========================================================================== */
+
+/* 1. Global Custom Utilities & Inter Font Variables */
+:root {
+    --color-vanguard-dark: #0B0F17;
+    --color-vanguard-card: #151C2C;
+    --color-vanguard-border: #2A354F;
+    --color-vanguard-accent: #991B1B;
+    --color-vanguard-accent-hover: #7F1D1D;
+    --color-vanguard-emerald: #10B981;
+    --color-vanguard-amber: #F59E0B;
+}
+
+/* 2. Custom Webkit High-Fidelity Scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-vanguard-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-vanguard-border);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-vanguard-accent);
+}
+
+/* 3. Core Structural SPA Engine Architecture */
+.view-section {
+    display: none;
+}
+
+.view-section.active {
+    display: block;
+    animation: viewFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes viewFadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(8px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* 4. Navigation Focus & Active State Anchors */
+.active-nav {
+    border-bottom: 2px solid var(--color-vanguard-accent);
+    color: #ffffff !important;
+    background-color: rgba(153, 27, 27, 0.1);
+}
+
+/* 5. Dual-Column Grid Matrix Layout (Desktop -> Mobile Fallback) */
+.shop-layout {
+    display: grid;
+    grid-template-columns: 310px 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+    .shop-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 6. Hardware Card Component Transitions & Micro-Interactions */
+.product-card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card-hover:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-vanguard-accent);
+    box-shadow: 0 10px 25px -5px rgba(153, 27, 27, 0.15);
+}
+
+/* 7. Catalog Sidebar Matrix Modifiers */
+.filter-sidebar {
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+/* 8. Global Status/Notification Toast Interceptors */
+#global-toast {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
